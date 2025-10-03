@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Dosen;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Models\ProgramStudi;
 
 class DosenController extends Controller
 {
@@ -25,7 +26,11 @@ class DosenController extends Controller
 
     public function create()
     {
-        return view('admin.dosen.create');
+        // Mengambil semua data program studi dari database
+        $programStudis = ProgramStudi::orderBy('nama')->get();
+
+        // Mengirim data tersebut ke view
+        return view('admin.dosen.create', compact('programStudis'));
     }
 
     public function store(Request $request)

@@ -112,8 +112,9 @@
         background: #f1f5f9;
     }
     .filter-form .col-md-6,
-    .filter-form .col-md-4 {
-        margin-bottom: 0,5rem;
+    .filter-form .col-md-4,
+    .filter-form .col-md-3 {
+        margin-bottom: 0.5rem;
         margin-top: 0.5rem;
     }
     @media (max-width: 900px) {
@@ -134,12 +135,6 @@
         <h5 class="laporan-title">
             <i class="fas fa-chart-pie me-2 text-primary"></i> Laporan Kinerja Dosen
         </h5>
-        {{-- Ganti tombol print lama --}}
-        {{-- <button onclick="window.print()" class="print-button">
-            <i class="fas fa-print me-1"></i> Cetak
-        </button> --}}
-
-        {{-- Tambahkan tombol baru --}}
         <button onclick="cetakLaporan()" class="btn btn-sm btn-outline-primary print-button">
             <i class="fas fa-print me-1"></i> Cetak Laporan
         </button>
@@ -148,11 +143,11 @@
         <div class="filter-form">
             <form action="{{ route('admin.laporan.index') }}" method="GET">
                 <div class="row g-3 align-items-end">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="search" class="form-label fw-bold">Cari Nama atau NIDN:</label>
                         <input type="text" name="search" id="search" class="form-control" value="{{ $search ?? '' }}" placeholder="Ketik di sini...">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="prodi" class="form-label fw-bold">Saring per Program Studi:</label>
                         <select name="prodi" id="prodi" class="form-select">
                             <option value="">-- Semua Program Studi --</option>
@@ -161,6 +156,23 @@
                                     {{ $option->prodi }}
                                 </option>
                             @endforeach
+                        </select>
+                    </div>
+                    {{-- Filter Tahun Baru --}}
+                    <div class="col-md-3">
+                        <label for="tahun" class="form-label fw-bold">Saring per Periode:</label>
+                        <select name="tahun" id="tahun" class="form-select">
+                            <option value="all" {{ $filterTahun == 'all' ? 'selected' : '' }}>Semua Waktu</option>
+                            <option value="1_year" {{ $filterTahun == '1_year' ? 'selected' : '' }}>Setahun Terakhir</option>
+                            <option value="3_years" {{ $filterTahun == '3_years' ? 'selected' : '' }}>3 Tahun Terakhir</option>
+                            <option value="5_years" {{ $filterTahun == '5_years' ? 'selected' : '' }}>5 Tahun Terakhir</option>
+                            @if($yearOptions->count() > 0)
+                                <optgroup label="Tahun Spesifik">
+                                    @foreach($yearOptions as $year)
+                                        <option value="{{ $year }}" {{ $filterTahun == $year ? 'selected' : '' }}>{{ $year }}</option>
+                                    @endforeach
+                                </optgroup>
+                            @endif
                         </select>
                     </div>
                     <div class="col-md-2">
@@ -203,13 +215,15 @@
         </div>
     </div>
 </div>
-{{-- Tambahkan script ini di bagian paling bawah file laporan/index.blade.php --}}
+@endsection
+
 @push('scripts')
 <script>
     function cetakLaporan() {
         // Ambil nilai filter saat ini dari form
         const search = document.getElementById('search').value;
         const prodi = document.getElementById('prodi').value;
+        const tahun = document.getElementById('tahun').value;
 
         // Buat URL baru dengan parameter filter dan parameter 'cetak=true'
         const url = new URL("{{ route('admin.laporan.index') }}");
@@ -220,10 +234,12 @@
         if (prodi) {
             url.searchParams.append('prodi', prodi);
         }
+        if (tahun) {
+            url.searchParams.append('tahun', tahun);
+        }
 
         // Buka URL tersebut di tab baru (yang akan otomatis membuka dialog cetak)
         window.open(url.toString(), '_blank');
     }
 </script>
 @endpush
-@endsection

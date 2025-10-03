@@ -61,56 +61,6 @@
     .dosen-table td {
         text-align: center;
     }
-
-    /* Tombol Aksi Vertikal */
-    .btn-action-text {
-        display: block;
-        width: 75px;
-        text-align: center;
-        font-size: 0.85rem;
-        font-weight: 600;
-        padding: 5px 0;
-        margin: 3px auto;
-        border: none;
-        border-radius: 6px;
-        transition: all 0.2s ease-in-out;
-        color: #fff;
-        cursor: pointer;
-    }
-    .btn-detail {
-        background-color: #0dcaf0;
-    }
-    .btn-detail:hover {
-        background-color: #0bb1d4;
-    }
-    .btn-edit {
-        background-color: #2563eb;
-    }
-    .btn-edit:hover {
-        background-color: #1e4ed8;
-    }
-    .btn-delete {
-        background-color: #dc3545;
-    }
-    .btn-delete:hover {
-        background-color: #bb2d3b;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 2.5rem 1rem;
-        color: #b0b8c1;
-    }
-    .empty-state i {
-        font-size: 2.2rem;
-        margin-bottom: 1rem;
-        color: #cbd5e1;
-    }
-    @media (max-width: 768px) {
-        .dosen-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-        .dosen-table th, .dosen-table td { padding: 10px 7px; font-size: 0.97rem; }
-    }
-
     .aksi-btn-group {
         display: flex;
         flex-direction: column;
@@ -159,6 +109,20 @@
         background: #ef4444;
         color: #fff;
     }
+    .empty-state {
+        text-align: center;
+        padding: 2.5rem 1rem;
+        color: #b0b8c1;
+    }
+    .empty-state i {
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+        color: #cbd5e1;
+    }
+    @media (max-width: 768px) {
+        .dosen-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .dosen-table th, .dosen-table td { padding: 10px 7px; font-size: 0.97rem; }
+    }
 </style>
 
 <div class="dosen-card">
@@ -166,8 +130,8 @@
     <div class="dosen-header">
         <h1><i class="fas fa-users mr-2"></i> Daftar Dosen</h1>
         <div style="display: flex; gap: 10px;">
-            {{-- <a href="{{ route('admin.dosen.create') }}" class="btn btn-primary" style="padding: 8px 14px; border-radius: 8px; font-weight: 500;">Tambah Dosen Baru</a> --}}
-        </div>
+        <a href="{{ route('admin.dosen.create') }}" class="btn btn-primary" style="padding: 8px 14px; border-radius: 8px; font-weight: 500;">Tambah Dosen Baru</a>
+    </div>
     </div>
 
     {{-- Alert Success --}}
@@ -181,9 +145,9 @@
     <div class="search-form">
         <form action="{{ route('admin.dosen.index') }}" method="GET" class="d-flex flex-wrap gap-2">
             <input type="text" name="search" placeholder="Cari Nama atau NIDN..." 
-                class="form-control" 
-                value="{{ request('search') }}" 
-                style="flex: 1; max-width: 300px;">
+                   class="form-control" 
+                   value="{{ request('search') }}" 
+                   style="flex: 1; max-width: 300px;">
             <button type="submit" class="btn btn-primary">Cari</button>
         </form>
     </div>
@@ -200,38 +164,41 @@
                     <th style="width:15%;">Aksi</th>
                 </tr>
             </thead>
+            {{-- KODE YANG DIPERBAIKI ADA DI BAGIAN INI --}}
             <tbody>
-                @forelse ($dosens as $dosen)
-                    <tr>
-                        <td>{{ $loop->iteration + $dosens->firstItem() - 1 }}</td>
-                        <td style="text-align:left;">{{ $dosen->nama_dosen }}</td>
-                        <td>{{ $dosen->nidn }}</td>
-                        <td>{{ $dosen->prodi }}</td>
-                        <td>
-                            <div class="aksi-btn-group">
-                                <a href="{{ route('admin.dosen.show', $dosen->id) }}"
-                                   class="aksi-btn aksi-btn-detail"
-                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
-                                    <i class="fas fa-eye"></i> Detail
-                                </a>
-                                <a href="{{ route('admin.dosen.edit', $dosen->id) }}"
-                                   class="aksi-btn aksi-btn-edit"
-                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <form action="{{ route('admin.dosen.destroy', $dosen->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="aksi-btn aksi-btn-hapus"
-                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
-                                        <i class="fas fa-trash-alt"></i> Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
+                @if ($dosens->count() > 0)
+                    @foreach ($dosens as $dosen)
+                        <tr>
+                            <td>{{ $loop->iteration + $dosens->firstItem() - 1 }}</td>
+                            <td style="text-align:left;">{{ $dosen->nama_dosen }}</td>
+                            <td>{{ $dosen->nidn }}</td>
+                            <td>{{ $dosen->prodi }}</td>
+                            <td>
+                                <div class="aksi-btn-group">
+                                    <a href="{{ route('admin.dosen.show', $dosen->id) }}"
+                                       class="aksi-btn aksi-btn-detail"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </a>
+                                    <a href="{{ route('admin.dosen.edit', $dosen->id) }}"
+                                       class="aksi-btn aksi-btn-edit"
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form action="{{ route('admin.dosen.destroy', $dosen->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="aksi-btn aksi-btn-hapus"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
+                                            <i class="fas fa-trash-alt"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                @else
                     <tr>
                         <td colspan="5">
                             <div class="empty-state">
@@ -246,7 +213,7 @@
                             </div>
                         </td>
                     </tr>
-                @endforelse
+                @endif
             </tbody>
         </table>
     </div>

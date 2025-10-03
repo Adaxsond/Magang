@@ -54,7 +54,7 @@
 <body onload="window.print()">
 
     <div class="report-header">
-        <img src="{{ asset('images/logo.jpg') }}" alt="Logo Universitas">
+        <img src="{{ public_path('images/logo.jpg') }}" alt="Logo Universitas">
         <h1>Laporan Kinerja Dosen</h1>
         <p>Universitas Sehati Indonesia</p>
     </div>
@@ -67,7 +67,10 @@
         @if($filterProdi)
             <span>| Program Studi "{{ $filterProdi }}"</span>
         @endif
-        @if(!$search && !$filterProdi)
+        @if($filterTahunText)
+            <span>| Periode "{{ $filterTahunText }}"</span>
+        @endif
+        @if(!$search && !$filterProdi && (!$filterTahunText || $filterTahunText == 'Semua Waktu'))
             <span>Tidak ada</span>
         @endif
         <br>

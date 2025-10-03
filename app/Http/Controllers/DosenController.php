@@ -35,7 +35,7 @@ class DosenController extends Controller
         $validated = $request->validate([
             'nama_dosen' => 'required|string|max:255',
             'nidn' => 'required|string|max:20',
-            'prodi' => 'required|string|max:100', // Validasi prodi sebagai string
+            'prodi' => 'required|string|exists:program_studis,nama', // Diubah: Validasi prodi dari tabel
             'email' => 'required|email',
             'jurnals' => 'required|array|min:1',
             'jurnals.*.nama_jurnal' => 'required|string|max:255',
@@ -72,7 +72,7 @@ class DosenController extends Controller
         $validated = $request->validate([
             'nama_dosen' => 'required|string|max:255',
             'nidn' => 'required|string|max:20',
-            'prodi' => 'required|string|max:100', // Validasi prodi sebagai string
+            'prodi' => 'required|string|exists:program_studis,nama', // Diubah: Validasi prodi dari tabel
             'email' => 'required|email',
             'jenis_pkm' => 'required|string|exists:jenis_pkms,nama', // Validasi jenis_pkm dari tabel
             'luaran' => 'required|array|min:1',
